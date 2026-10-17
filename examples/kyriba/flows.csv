@@ -1,0 +1,4 @@
+Reference,Company,Account Code,Value Date,Amount,Currency,Budget Code,Third Party,Status
+KY-7781,TON,NZ-OPS,20/11/2026,-62000.00,NZD,PAY-SUPP,Coolstore rent,Confirmed
+KY-7782,TON,NZ-USD,04/12/2026,90000.00,USD,REC-CUST,"Harbour Foods, Inc.",Forecast
+KY-7700,TON,NZ-OPS,01/10/2026,-18000.00,NZD,PAY-WAGES,Staff,Actual

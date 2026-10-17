@@ -1,13 +1,56 @@
 [
   {
     "name": "week",
-    "title": "This week",
-    "subtitle": "Treasury for Claude Code: what needs attention, rendered by npm run view",
+    "title": "Treasury this week",
+    "subtitle": "Cash, the 13 weeks ahead and what needs a decision. Rendered by npm run view.",
     "sections": [
       {
-        "title": "Needs attention",
-        "note": "TODO(author): point this at the industry's attention view (overdue, stuck, quiet).",
-        "sql": "select 'replace me' as item, 'TODO(author)' as why"
+        "title": "Needs a decision",
+        "note": "Stale balances, late receipts, policy breaches, covenants and maturities.",
+        "sql": "select issue, record, owner, due from attention_items order by due nulls first, record"
+      },
+      {
+        "title": "Cash position",
+        "sql": "select entity, currency, accounts, balance_cents as balance_cents, base_cents as in_base_cents, oldest_days as oldest_balance_days from (select entity, currency, count(*)::integer accounts, sum(balance_cents)::bigint balance_cents, sum(base_cents)::bigint base_cents, max(days_old) oldest_days from account_position group by entity, currency) p order by entity, currency"
+      },
+      {
+        "title": "13-week forecast (base currency)",
+        "note": "Overdue expected flows sit in week 0 until they are settled, moved or cancelled.",
+        "sql": "select week, week_start, opening_cents, in_cents, out_cents, closing_cents, (closing_cents - floor_cents)::bigint over_floor_cents from forecast_weeks order by week"
+      }
+    ]
+  },
+  {
+    "name": "fx",
+    "title": "FX cover against policy",
+    "subtitle": "Exposures, hedges and the board's bands",
+    "sections": [
+      {
+        "title": "Cover by band",
+        "sql": "select currency, direction, months_from, months_to, exposure_cents, hedged_cents, cover_pct, min_pct, max_pct, status from fx_cover_status order by currency, direction, months_from"
+      },
+      {
+        "title": "Open hedges",
+        "sql": "select h.code, h.counterparty, h.currency, h.direction, h.notional_cents, h.contract_rate, r.base_per_unit as spot_rate, h.settles_on, h.designated, h.designation_ref from hedges h left join rates_latest r on r.currency = h.currency where h.status = 'open' order by h.settles_on"
+      }
+    ]
+  },
+  {
+    "name": "debt",
+    "title": "Facilities and covenants",
+    "subtitle": "Headroom, maturities and certificates",
+    "sections": [
+      {
+        "title": "Facilities",
+        "sql": "select code, entity, lender, kind, currency, limit_cents, drawn_cents, headroom_cents, maturity_on, days_to_maturity, review_on from facility_status order by maturity_on"
+      },
+      {
+        "title": "Covenants",
+        "sql": "select code, name, facility, test, threshold, value, passed, headroom_pct, certificate_due_on, certificate_sent_on, next_test_on from covenant_status order by facility, code"
+      },
+      {
+        "title": "Bank counterparty exposure",
+        "sql": "select bank, rating, deposits_cents, limit_cents, (limit_cents - deposits_cents)::bigint spare_cents from counterparty_exposure order by deposits_cents desc"
       }
     ]
   }

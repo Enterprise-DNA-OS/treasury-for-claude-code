@@ -30,7 +30,11 @@ function fmt(v, key, row) {
   if (typeof v === 'boolean') return v ? 'Yes' : 'No';
   if (v instanceof Date) return v.toISOString().replace('T', ' ').replace('.000Z', ' UTC');
   if (key.endsWith('_bps')) return `${(Number(v) / 100).toFixed(2)}%`;
-  if (key.endsWith('_cents')) return `${row.currency || ''} ${(Number(v) / 100).toFixed(2)}`.trim();
+  // Thousands separators; a *_base_cents column is already in the group's base currency, so it takes no row currency.
+  if (key.endsWith('_cents')) {
+    const amount = (Number(v) / 100).toLocaleString('en-NZ', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    return key.endsWith('_base_cents') ? amount : `${row.currency || ''} ${amount}`.trim();
+  }
   if (typeof v === 'object') return JSON.stringify(v);
   if (typeof v === 'number' && !Number.isInteger(v)) return v.toFixed(2);
   return v;

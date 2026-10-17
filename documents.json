@@ -1,11 +1,36 @@
 [
   {
-    "name": "example",
-    "title": "TODO(author): the first document this industry must produce",
-    "for_each": "select gen_random_uuid() as id, 'Example' as name",
+    "name": "treasury-report",
+    "title": "Treasury report",
+    "for_each": "select id, name from entities order by code",
     "file": "name",
     "sections": [
-      { "title": "Details", "sql": "select 'replace me' as item, $1::text as record_id" }
+      { "title": "Cash by account", "sql": "select p.account, p.bank, p.name, p.currency, p.as_of, p.balance_cents, p.base_cents as in_base_cents from account_position p join entities e on e.code = p.entity where e.id = $1 order by p.account" },
+      { "title": "Facilities", "sql": "select s.code, s.lender, s.kind, s.currency, s.limit_cents, s.drawn_cents, s.headroom_cents, s.maturity_on, s.review_on from facility_status s join facilities f on f.id = s.id where f.entity_id = $1 order by s.maturity_on" },
+      { "title": "Covenants", "sql": "select s.code, s.name, s.test, s.threshold, s.value, s.passed, s.headroom_pct, s.certificate_due_on, s.certificate_sent_on from covenant_status s join covenants c on c.id = s.id join facilities f on f.id = c.facility_id where f.entity_id = $1 order by s.code" },
+      { "title": "Open hedges", "sql": "select code, counterparty, currency, direction, notional_cents, contract_rate, settles_on, designated from hedges where entity_id = $1 and status = 'open' order by settles_on" },
+      { "title": "Policy exceptions for the group", "note": "Each line cites the rule it breaks.", "sql": "select issue, record, rule from compliance_checks where $1::uuid is not null order by rule, record" }
+    ]
+  },
+  {
+    "name": "hedge-documentation",
+    "title": "Hedge relationship documentation",
+    "for_each": "select id, code as name from hedges where designated and status = 'open' order by code",
+    "file": "name",
+    "sections": [
+      { "title": "Hedging instrument", "sql": "select h.code, h.instrument, h.counterparty, h.direction, h.currency, h.notional_cents, h.contract_rate, h.traded_on, h.settles_on from hedges h where h.id = $1" },
+      { "title": "Hedged item", "sql": "select x.code, x.description, x.direction, x.currency, x.amount_cents, x.expected_on, x.basis from hedges h join exposures x on x.id = h.exposure_id where h.id = $1" },
+      { "title": "Designation", "note": "NZ IFRS 9 and AASB 9 paragraph 6.4.1(b) ask for formal designation and documentation at inception, including the risk management objective and how effectiveness is assessed. Complete the objective and the effectiveness method before this is filed.", "sql": "select h.designation_ref as reference, h.designated_on, (h.designated_on - h.traded_on) as days_after_trade, 'Foreign currency risk on a highly probable forecast transaction' as risk_hedged, case when x.id is null then null else round(100.0 * h.notional_cents / x.amount_cents, 1) end as hedge_ratio_pct from hedges h left join exposures x on x.id = h.exposure_id where h.id = $1" }
+    ]
+  },
+  {
+    "name": "bank-mandate",
+    "title": "Bank mandate review",
+    "for_each": "select id, code || ' ' || bank as name from bank_accounts where status = 'open' order by code",
+    "file": "name",
+    "sections": [
+      { "title": "Account", "sql": "select code, bank, name, number_masked, currency, purpose from bank_accounts where id = $1" },
+      { "title": "Current signatories", "note": "Anyone who has left the business must come off the mandate. Send the bank's change form, then record the removal.", "sql": "select p.name as person, p.role, p.status, p.left_on, s.authority, s.added_on from signatories s join people p on p.id = s.person_id where s.account_id = $1 and s.removed_on is null order by p.name" }
     ]
   }
 ]

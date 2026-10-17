@@ -1,24 +1,21 @@
 # Why there is no front end
 
-Kyriba is a database with a subscription. The tables underneath it are ordinary: a few entities, a few relationships, a handful of workflows you repeat every week. What you pay for is the layer on top that lets people who do not write SQL get at those tables. Screens, filters, dashboards, forms.
+Kyriba is a database with a subscription. The records underneath it are ordinary: bank accounts, balances, expected cash flows, FX deals, facilities and covenants, and a handful of routines a treasurer runs every week. What you pay for is the layer on top that lets people who do not write SQL get at those records, plus bank connectivity and payments.
 
-That layer used to be the whole product, because talking to a database was hard. It is not hard any more. Open this folder in Claude Code, describe what you want, and it writes the query, runs it, and explains the answer. Ask a question the dashboard never had a chart for and you still get an answer.
+The screens used to be the product, because talking to a database was hard. It is not hard any more. Open this folder in Claude Code, ask "which week do we dip below the floor, and what drives it?", and it runs the query and explains the answer.
 
 ## What you gain
 
-- **Better answers.** A dashboard shows what the vendor decided to chart. Here you ask your own question, in your own words, and get it answered against your own data.
-- **No seats.** Everyone who needs to look can look. The bill does not grow with headcount.
-- **Your data in your Postgres.** Plain tables. Back them up, query them from anything, leave any time. There is no export step because there is nothing to leave.
-- **A process that matches you.** When your way of working changes, you add a command. You do not wait for a feature request to clear.
+- **Better answers.** A dashboard shows what the vendor charted. Here you ask your own question against your own records: forecast error by category, cover against each policy band, who can still sign after leaving.
+- **No seats and no modules.** The finance team, the CFO and the board pack all read the same records. Nothing grows with headcount or bank accounts.
+- **Your data in your Postgres.** Plain tables you back up and query from anything. Leaving is free.
+- **Your policy, your rules.** Change a hedging band or a covenant definition in plain language with `/customise`.
 
-## What you give up
+## What a screen gives that this does not
 
-- **A visual board.** Stages are a table you ask about, not cards you drag.
-- **A phone app.** It runs where Claude Code runs.
+- **Bank connectivity and payment execution.** This reads bank files; it does not connect to banks or move money.
+- **A live drag-and-drop forecast grid.** You change flows by asking, not by dragging cells.
+- **A phone app and offline access.** It runs where Claude Code runs.
 - **A vendor help desk.** This is open source. Enterprise DNA supports the installed version for businesses that want someone to call.
 
-## Who this fits
-
-Small teams who already use Claude Code, or who would rather learn to ask than learn another interface. If your team needs a screen to look at all day, keep Kyriba. If you need the answers more than the screens, this is cheaper, faster and yours.
-
-Installed and run for you: https://enterprisedna.co/omni/instead-of/kyriba
+Every one of those can be built into your own version, on top of the same database. That is what Enterprise DNA does: https://enterprisedna.co/omni/instead-of/kyriba

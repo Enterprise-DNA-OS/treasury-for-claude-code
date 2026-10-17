@@ -1,0 +1,10 @@
+{
+  "_": "Column names from the Kyriba reports you save as CSV. Rename the right-hand side to match your report template.",
+  "date_format": "DD/MM/YYYY",
+  "balances": { "account": "Account Code", "as_of": "Value Date", "balance": "Closing Balance", "currency": "Currency" },
+  "flows": { "code": "Reference", "entity": "Company", "account": "Account Code", "due_on": "Value Date", "amount": "Amount", "currency": "Currency", "category": "Budget Code", "counterparty": "Third Party", "status": "Status" },
+  "hedges": { "code": "Deal Number", "entity": "Company", "counterparty": "Counterparty", "instrument": "Product", "currency": "Currency", "direction": "Buy Sell", "notional": "Amount", "rate": "Rate", "traded_on": "Trade Date", "settles_on": "Value Date" },
+  "categories": { "REC-CUST": "customer_receipts", "PAY-SUPP": "suppliers", "PAY-WAGES": "payroll", "PAY-TAX": "tax", "PAY-INT": "interest", "PAY-CAPEX": "capex" },
+  "statuses": { "Forecast": "forecast", "Confirmed": "committed", "Actual": "settled" },
+  "directions": { "Sell": "sell", "Buy": "buy", "S": "sell", "B": "buy" }
+}
